@@ -4,110 +4,63 @@
   <title>Quote Generator Web App</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <!-- jQuery and Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    .column {
-      float: left;
-      width: 33.33%;
-      padding: 5px;
-    }
-
-    /* Clearfix (clear floats) */
-    .row::after {
-      content: "";
-      clear: both;
-      display: table;
-    }
-    </style>
   <style>
-    /* Remove the navbar's default margin-bottom and rounded borders */ 
-    .navbar {
-      margin-bottom: 0;
-      border-radius: 0;
+    * { box-sizing: border-box; }
+    .navbar { margin-bottom: 20px; border-radius: 0; }
+    /* Fixed size for the main quote background */
+    #quoteImage {
+      width: 800px;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 5px;
+      border: 1px solid #ddd;
     }
-    
-    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-    .row.content {height: 450px}
-    
-    /* Set gray background color and 100% height */
-    .sidenav {
-      padding-top: 20px;
-/*
-      background-color: #f1f1f1;
-      height: 100%;
-*/
-    }
-    
-    /* Set black background color, white text and some padding */
-    footer {
-      background-color: #555;
+    .quote-container {
+      position: relative;
+      display: inline-block; /* shrink-wrap container to image size */
+      text-align: center;
       color: white;
+    }
+    .centered {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 45px;
+      width: 700px; /* fixed width to mimic wrapping */
+      word-wrap: break-word;
+      text-shadow: 5px 5px 5px black;
+    }
+    /* Styling for background image options */
+    .bg-option {
+      width: 100px;
+      height: 70px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 5px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .bg-option:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 0px 8px rgba(0,0,0,0.6);
+    }
+    /* Background selection container */
+    .bg-selector {
+      margin-top: 30px;
       padding: 15px;
     }
-    
-    /* On small screens, set height to 'auto' for sidenav and grid */
-    @media screen and (max-width: 767px) {
-      .sidenav {
-        height: auto;
-        padding: 15px;
-      }
-      .row.content {height:auto;} 
-    }
   </style>
-    <style>
-        img {
-  max-width: 100%;
-  height: auto;
-}
-.container {
-  position: relative;
-  text-align: center;
-  color: white;
-}
-
-.bottom-left {
-  position: absolute;
-  bottom: 8px;
-  left: 16px;
-}
-
-.top-left {
-  position: absolute;
-  top: 8px;
-  left: 16px;
-}
-
-.top-right {
-  position: absolute;
-  top: 8px;
-  right: 16px;
-}
-
-.bottom-right {
-  position: absolute;
-  bottom: 8px;
-  right: 16px;
-}
-
-.centered {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 45px;
-  text-shadow: 5px 5px 5px black;
-}
-</style>
-    
 </head>
 <body>
 
+<!-- Navbar with Home, Topics, Authors, Search -->
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -116,78 +69,90 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="#">Quote Generator Web App</a>
+      <a class="navbar-brand" href="#" id="homeLink">Quote Generator Web App</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-          <li class="active"><a href="#">Topics</a></li>
-          <li class="active"><a href="#">Authors</a></li>
-          <li class="active"><a href="#"><input type="text" placeholder="Search.."></a></li>
-          
+        <!-- Home resets the quote -->
+        <li class="active"><a href="#" id="homeLink2">Home</a></li>
+        <!-- Topics Dropdown -->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Topics <span class="caret"></span></a>
+          <ul class="dropdown-menu" id="topicsDropdown">
+            <li><a href="#" class="topic-option" data-topic="Motivational">Motivational</a></li>
+            <li><a href="#" class="topic-option" data-topic="Inspirational">Inspirational</a></li>
+            <li><a href="#" class="topic-option" data-topic="Humor">Humor</a></li>
+          </ul>
+        </li>
+        <!-- Authors Dropdown -->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Authors <span class="caret"></span></a>
+          <ul class="dropdown-menu" id="authorsDropdown">
+            <li><a href="#" class="author-option" data-author="Charles R. Swindoll">Charles R. Swindoll</a></li>
+            <li><a href="#" class="author-option" data-author="Steve Jobs">Steve Jobs</a></li>
+            <li><a href="#" class="author-option" data-author="Winston Churchill">Winston Churchill</a></li>
+            <li><a href="#" class="author-option" data-author="Theodore Roosevelt">Theodore Roosevelt</a></li>
+          </ul>
+        </li>
+        <!-- Search Input -->
+        <li>
+          <form class="navbar-form">
+            <div class="form-group">
+              <input type="text" id="searchInput" class="form-control" placeholder="Search..">
+            </div>
+          </form>
+        </li>
       </ul>
-<!--
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      </ul>
--->
     </div>
   </div>
 </nav>
-  
-<div class="container-fluid text-center">    
-  <div class="row content">
-<!--
-    <div class="col-sm-2 sidenav">
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p> 
-    </div>
--->
-    <div class="col-sm-8 text-center"> 
+
+<!-- Main Content -->
+<div class="container text-center">    
+  <div class="row">
+    <div class="col-sm-12">
       <h1>Welcome</h1>
-      <p>The Quote Generator Web App is a simple, clean, interactive web    application that displays a
-          random motivational or inspirational quote each time the user clicks a button.</p>
+      <p>The Quote Generator Web App is a simple, clean, interactive web application that displays a random motivational or inspirational quote each time the user clicks a button.</p>
       <hr>
       <h3>Quote of the day</h3>
-    <div class="container">
-      <img src="pexels-pixabay-50673.jpg" alt="Snow" style="width:100%;">
-      <div class="centered">Life is 10% what happens to you and 90% how you react to it. <br> - Charles R. Swindoll</div>
+      <div class="quote-container">
+        <img id="quoteImage" src="pexels-pixabay-50673.jpg" alt="Background Image">
+        <div class="centered" id="quoteText">
+          Life is 10% what happens to you and 90% how you react to it. <br> - Charles R. Swindoll
+        </div>
+      </div>
+      <br>
+      <button id="saveButton" type="button" class="btn btn-primary">Download This Quote</button>
+      <button id="generateButton" type="button" class="btn btn-success">Generate Another Quote</button>
     </div>
-      <button type="button">Save this quote</button>
-      <button type="button">Generate another quote</button>
-      
-    </div>
-      
-     <div class="col-sm-2 sidenav">
+  </div>
+
+  <!-- Background Image Selection Section -->
+  <div class="row bg-selector">
+    <div class="col-sm-12">
       <div class="well">
-        <p>Click on a different image to choose a new background</p>
+        <h4>Choose a background</h4>
+        <div class="row">
+          <div class="col-xs-4 col-sm-2">
+            <img class="bg-option" src="pexels-photo-237762.jpeg" alt="Snow">
+          </div>
+          <div class="col-xs-4 col-sm-2">
+            <img class="bg-option" src="pexels-photo-459203.jpeg" alt="Forest">
+          </div>
+          <div class="col-xs-4 col-sm-2">
+            <img class="bg-option" src="pexels-photo-3177386.webp" alt="Mountains">
+          </div>
+          <div class="col-xs-4 col-sm-2">
+            <img class="bg-option" src="matterhorn-alpine-zermatt-mountains-188973.jpeg" alt="Snow">
+          </div>
+          <div class="col-xs-4 col-sm-2">
+            <img class="bg-option" src="pexels-photo-752424.jpeg" alt="Forest">
+          </div>
+          <div class="col-xs-4 col-sm-2">
+            <img class="bg-option" src="free-photo-of-dramatic-peaks-of-the-swiss-mountains.jpeg" alt="Mountains">
+          </div>
+        </div>
       </div>
-         
-    <div class="row">
-      <div class="column">
-        <img src="pexels-photo-237762.jpeg" alt="Snow" style="width:100%">
-      </div>
-      <div class="column">
-        <img src="pexels-photo-459203.jpeg" alt="Forest" style="width:100%">
-      </div>
-      <div class="column">
-        <img src="pexels-photo-3177386.webp" alt="Mountains" style="width:100%">
-      </div>
-    </div>
-    <div class="row">
-      <div class="column">
-        <img src="matterhorn-alpine-zermatt-mountains-188973.jpeg" alt="Snow" style="width:100%">
-      </div>
-      <div class="column">
-        <img src="pexels-photo-752424.jpeg" alt="Forest" style="width:100%">
-      </div>
-      <div class="column">
-        <img src="free-photo-of-dramatic-peaks-of-the-swiss-mountains.jpeg" alt="Mountains" style="width:100%">
-      </div>
-    </div>
-         
-   
     </div>
   </div>
 </div>
@@ -195,6 +160,212 @@
 <footer class="container-fluid text-center">
   <p>@2025 Quote Generator Web App</p>
 </footer>
+
+<script>
+  // Array of quotes with text, image, author, and topic
+  var quotes = [
+    {
+      text: "Life is 10% what happens to you and 90% how you react to it.<br> - Charles R. Swindoll",
+      img: "pexels-pixabay-50673.jpg",
+      author: "Charles R. Swindoll",
+      topic: "Motivational"
+    },
+    {
+      text: "The longer you wait for something, the more you appreciate it when you get it.<br> - Charles R. Swindoll",
+      img: "pexels-pixabay-50673.jpg",
+      author: "Charles R. Swindoll",
+      topic: "Motivational"
+    },
+    {
+      text: "The only way to do great work is to love what you do.<br> - Steve Jobs",
+      img: "pexels-photo-237762.jpeg",
+      author: "Steve Jobs",
+      topic: "Inspirational"
+    },
+    {
+      text: "Innovation distinguishes between a leader and a follower.<br> - Steve Jobs",
+      img: "pexels-photo-237762.jpeg",
+      author: "Steve Jobs",
+      topic: "Inspirational"
+    },
+    {
+      text: "Your work is going to fill a large part of your life. Don't settle.<br> - Steve Jobs",
+      img: "pexels-photo-237762.jpeg",
+      author: "Steve Jobs",
+      topic: "Inspirational"
+    },
+    {
+      text: "Success is not final; failure is not fatal: It is the courage to continue that counts.<br> - Winston Churchill",
+      img: "pexels-photo-752424.jpeg",
+      author: "Winston Churchill",
+      topic: "Motivational"
+    },
+    {
+      text: "Never, never, never give up.<br> - Winston Churchill",
+      img: "pexels-photo-752424.jpeg",
+      author: "Winston Churchill",
+      topic: "Motivational"
+    },
+    {
+      text: "Believe you can and you're halfway there.<br> - Theodore Roosevelt",
+      img: "pexels-photo-3888066.jpeg",
+      author: "Theodore Roosevelt",
+      topic: "Inspirational"
+    },
+    {
+      text: "Do what you can, with what you have, where you are.<br> - Theodore Roosevelt",
+      img: "pexels-photo-3888066.jpeg",
+      author: "Theodore Roosevelt",
+      topic: "Inspirational"
+    }
+  ];
+
+  // Display a given quote object in the main quote container
+  function displayQuote(quoteObj) {
+    document.getElementById("quoteImage").src = quoteObj.img;
+    document.getElementById("quoteText").innerHTML = quoteObj.text;
+  }
+
+  // Generate a random quote from the full list
+  function generateNewQuote() {
+    var randomIndex = Math.floor(Math.random() * quotes.length);
+    displayQuote(quotes[randomIndex]);
+  }
+
+  // Helper function to wrap text in canvas given a max width.
+  function wrapText(ctx, text, maxWidth, lineHeight) {
+    // First, split the text by newline characters.
+    var textLines = text.split('\n');
+    var finalLines = [];
+    textLines.forEach(function(line) {
+      var words = line.split(' ');
+      var currentLine = '';
+      for (var i = 0; i < words.length; i++) {
+        var testLine = currentLine + words[i] + ' ';
+        var metrics = ctx.measureText(testLine);
+        var testWidth = metrics.width;
+        if (testWidth > maxWidth && i > 0) {
+          finalLines.push(currentLine.trim());
+          currentLine = words[i] + ' ';
+        } else {
+          currentLine = testLine;
+        }
+      }
+      finalLines.push(currentLine.trim());
+    });
+    return finalLines;
+  }
+
+  // Background image option click to update main quote background
+  document.querySelectorAll('.bg-option').forEach(function(img) {
+    img.addEventListener('click', function() {
+      document.getElementById('quoteImage').src = this.src;
+    });
+  });
+
+  // Generate another quote button
+  document.getElementById("generateButton").addEventListener("click", generateNewQuote);
+
+  // Save this quote button functionality:
+  // Save the image exactly as shown on the webapp with wrapped text and matching style.
+  document.getElementById('saveButton').addEventListener('click', function() {
+    var canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 400;
+    var ctx = canvas.getContext('2d');
+    
+    // Draw the background image scaled to canvas size
+    var img = document.getElementById('quoteImage');
+    var tempImg = new Image();
+    tempImg.crossOrigin = "Anonymous";
+    tempImg.src = img.src;
+    tempImg.onload = function() {
+      ctx.drawImage(tempImg, 0, 0, 800, 400);
+      
+      // Get the quote text from the HTML and replace <br> with newline characters
+      var textDiv = document.getElementById('quoteText');
+      var rawText = textDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
+      
+      // Setup canvas font styling to match display
+      ctx.font = "45px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      // Set a soft shadow to mimic CSS text-shadow
+      ctx.shadowColor = "rgba(0,0,0,0.4)";
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+      ctx.shadowBlur = 5;
+      // Set stroke for text border
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "black";
+      
+      // Define maximum text width (700px, same as .centered width) and lineHeight
+      var maxTextWidth = 700;
+      var lineHeight = 50;
+      
+      // Wrap text using the helper function, preserving newline breaks from the rawText.
+      var lines = wrapText(ctx, rawText, maxTextWidth, lineHeight);
+      
+      // Calculate total height of the text block and center vertically
+      var textBlockHeight = lines.length * lineHeight;
+      var startY = (canvas.height - textBlockHeight) / 2;
+      
+      // Draw each line with stroke and fill (center aligned)
+      for (var i = 0; i < lines.length; i++) {
+        var y = startY + i * lineHeight;
+        ctx.strokeText(lines[i], canvas.width / 2, y);
+        ctx.fillText(lines[i], canvas.width / 2, y);
+      }
+      
+      // Trigger download of the canvas as an image
+      var link = document.createElement('a');
+      link.download = 'quote.png';
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+  });
+
+  // Navbar Event Listeners
+  // Home resets to a random quote.
+  document.getElementById("homeLink").addEventListener("click", function(e) {
+    e.preventDefault();
+    generateNewQuote();
+  });
+  document.getElementById("homeLink2").addEventListener("click", function(e) {
+    e.preventDefault();
+    generateNewQuote();
+  });
+  
+  // Topics dropdown: redirect to topic.html with the selected topic as a URL parameter.
+  document.querySelectorAll(".topic-option").forEach(function(el) {
+    el.addEventListener("click", function(e) {
+      e.preventDefault();
+      var topic = this.getAttribute("data-topic");
+      window.location.href = "topic.html?topic=" + encodeURIComponent(topic);
+    });
+  });
+  
+  // Authors dropdown: redirect to a separate page for that author's quotes.
+  document.querySelectorAll(".author-option").forEach(function(el) {
+    el.addEventListener("click", function(e) {
+      e.preventDefault();
+      var author = this.getAttribute("data-author");
+      window.location.href = "author.html?author=" + encodeURIComponent(author);
+    });
+  });
+  
+  // Search input: when Enter key is pressed, redirect to search.html with the search query.
+  document.getElementById("searchInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      var searchText = this.value.trim();
+      if (searchText !== "") {
+        window.location.href = "search.html?search=" + encodeURIComponent(searchText);
+      }
+    }
+  });
+</script>
 
 </body>
 </html>
