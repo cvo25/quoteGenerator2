@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Search Results</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <style>
+    .quote {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 15px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Search Results for "<span id="searchQuery"></span>"</h1>
+    <div id="quotesContainer"></div>
+    <button class="btn btn-default" onclick="window.history.back();">Go Back</button>
+  </div>
+
+  <script>
+    // Function to get query parameter value by name
+    function getQueryParam(param) {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+    
+    var searchQuery = getQueryParam('search');
+    document.getElementById('searchQuery').textContent = searchQuery;
+    
+    // Array of quotes (same as used in index.html)
+    var quotes = [
+      {
+        text: "Life is 10% what happens to you and 90% how you react to it.<br> - Charles R. Swindoll",
+        img: "pexels-pixabay-50673.jpg",
+        author: "Charles R. Swindoll",
+        topic: "Motivational"
+      },
+      {
+        text: "The longer you wait for something, the more you appreciate it when you get it.<br> - Charles R. Swindoll",
+        img: "pexels-pixabay-50673.jpg",
+        author: "Charles R. Swindoll",
+        topic: "Motivational"
+      },
+      {
+        text: "The only way to do great work is to love what you do.<br> - Steve Jobs",
+        img: "pexels-photo-237762.jpeg",
+        author: "Steve Jobs",
+        topic: "Inspirational"
+      },
+      {
+        text: "Innovation distinguishes between a leader and a follower.<br> - Steve Jobs",
+        img: "pexels-photo-237762.jpeg",
+        author: "Steve Jobs",
+        topic: "Inspirational"
+      },
+      {
+        text: "Your work is going to fill a large part of your life. Don't settle.<br> - Steve Jobs",
+        img: "pexels-photo-237762.jpeg",
+        author: "Steve Jobs",
+        topic: "Inspirational"
+      },
+      {
+        text: "Success is not final; failure is not fatal: It is the courage to continue that counts.<br> - Winston Churchill",
+        img: "pexels-photo-752424.jpeg",
+        author: "Winston Churchill",
+        topic: "Motivational"
+      },
+      {
+        text: "Never, never, never give up.<br> - Winston Churchill",
+        img: "pexels-photo-752424.jpeg",
+        author: "Winston Churchill",
+        topic: "Motivational"
+      },
+      {
+        text: "Believe you can and you're halfway there.<br> - Theodore Roosevelt",
+        img: "pexels-photo-3888066.jpeg",
+        author: "Theodore Roosevelt",
+        topic: "Inspirational"
+      },
+      {
+        text: "Do what you can, with what you have, where you are.<br> - Theodore Roosevelt",
+        img: "pexels-photo-3888066.jpeg",
+        author: "Theodore Roosevelt",
+        topic: "Inspirational"
+      }
+    ];
+    
+    // Filter quotes based on the search query
+    var filteredQuotes = quotes.filter(function(q) {
+      return q.text.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1;
+    });
+    
+    var container = document.getElementById('quotesContainer');
+    if (filteredQuotes.length > 0) {
+      filteredQuotes.forEach(function(q) {
+        var div = document.createElement('div');
+        div.className = "quote";
+        div.innerHTML = q.text + "<br><em>" + q.author + "</em>";
+        container.appendChild(div);
+      });
+    } else {
+      container.innerHTML = "<p>No quotes found for this search.</p>";
+    }
+  </script>
+</body>
+</html>
